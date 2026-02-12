@@ -164,6 +164,95 @@ Resources:
         EntryPoints:
           - src/handlers/health.ts
 
+  # Auth Functions
+  RegisterFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/auth.register
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        RegisterApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /auth/register
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/auth.ts
+
+  LoginFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/auth.login
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        LoginApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /auth/login
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/auth.ts
+
+  ValidateTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/auth.validate
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        ValidateTokenApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /auth/validate
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/auth.ts
+
+  RefreshTokenFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/auth.refresh
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        RefreshTokenApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /auth/refresh
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/auth.ts
+
   # Patient Functions
   CreatePatientFunction:
     Type: AWS::Serverless::Function

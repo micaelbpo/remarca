@@ -8,6 +8,100 @@ Base URL: `https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev`
 Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/health" -Method Get
 ```
 
+## Authentication Endpoints
+
+### 1. Register User
+
+```powershell
+# Register as Professional
+$body = @{
+    email = "professional@example.com"
+    password = "SecurePass123"
+    name = "Dr. João Silva"
+    tenantId = "tenant-001"
+    userType = "PROFESSIONAL"
+    phone = "+5511987654321"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/register" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+
+# Register as Patient
+$body = @{
+    email = "patient@example.com"
+    password = "SecurePass123"
+    name = "Maria Santos"
+    tenantId = "tenant-001"
+    userType = "PATIENT"
+    phone = "+5511987654322"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/register" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+
+# Register as Admin
+$body = @{
+    email = "admin@example.com"
+    password = "SecurePass123"
+    name = "Admin User"
+    tenantId = "tenant-001"
+    userType = "ADMIN"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/register" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+```
+
+### 2. Login
+
+```powershell
+$body = @{
+    email = "professional@example.com"
+    password = "SecurePass123"
+} | ConvertTo-Json
+
+$loginResponse = Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/login" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+
+# Save the access token for later use
+$accessToken = $loginResponse.accessToken
+Write-Host "Access Token: $accessToken"
+```
+
+### 3. Validate Token
+
+```powershell
+# Use the token from login
+$headers = @{
+    "Authorization" = "Bearer $accessToken"
+}
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/validate" `
+    -Method Get `
+    -Headers $headers
+```
+
+### 4. Refresh Token (Coming Soon)
+
+```powershell
+$body = @{
+    refreshToken = "REFRESH_TOKEN_AQUI"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/auth/refresh" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+```
+
 ## Patient Endpoints
 
 ### 1. Create Patient
@@ -326,6 +420,10 @@ Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/d
 
 ## Notes
 
+- **Autenticação**: Use POST /auth/register para criar usuários e POST /auth/login para obter tokens
+- **Tipos de usuário**: ADMIN, PROFESSIONAL, PATIENT
+- **Senha**: Mínimo 8 caracteres, deve conter maiúsculas, minúsculas e números
+- **Token**: Após login, use o accessToken no header Authorization: Bearer <token>
 - Substitua `PATIENT_ID_AQUI`, `PROFESSIONAL_ID_AQUI`, `PRODUCT_ID_AQUI`, e `APPOINTMENT_ID_AQUI` pelos IDs retornados ao criar os recursos
 - Todos os dados sensíveis (email, telefone, Google Calendar tokens) são criptografados automaticamente
 - O `tenantId` é usado para isolamento multi-tenant
