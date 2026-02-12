@@ -142,7 +142,7 @@ export const encryptSensitiveFields = <T extends Record<string, unknown>>(
 
   fields.forEach((field) => {
     if (encrypted[field]) {
-      encrypted[field] = encryptionService.encrypt(String(encrypted[field])) as any;
+      encrypted[field] = encryptionService.encrypt(String(encrypted[field])) as T[keyof T];
     }
   });
 
@@ -158,7 +158,7 @@ export const decryptSensitiveFields = <T extends Record<string, unknown>>(
   fields.forEach((field) => {
     if (decrypted[field]) {
       try {
-        decrypted[field] = encryptionService.decrypt(String(decrypted[field])) as any;
+        decrypted[field] = encryptionService.decrypt(String(decrypted[field])) as T[keyof T];
       } catch (error) {
         logger.warn(`Failed to decrypt field: ${String(field)}`);
       }

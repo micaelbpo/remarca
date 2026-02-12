@@ -25,7 +25,11 @@ export class AuthService implements AuthServiceInterface {
   private cognitoClient: CognitoIdentityProviderClient;
   private userPoolId: string;
   private clientId: string;
-  private jwtVerifier: any;
+  private jwtVerifier: CognitoJwtVerifier<{
+    userPoolId: string;
+    tokenUse: 'access';
+    clientId: string;
+  }>;
 
   constructor() {
     this.cognitoClient = new CognitoIdentityProviderClient({

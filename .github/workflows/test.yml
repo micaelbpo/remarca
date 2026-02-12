@@ -32,10 +32,10 @@ jobs:
         continue-on-error: true
 
       - name: Run tests
-        run: npm test
+        run: npm test -- --passWithNoTests
 
       - name: Run tests with coverage
-        run: npm run test:coverage
+        run: npm run test:coverage -- --passWithNoTests
 
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3

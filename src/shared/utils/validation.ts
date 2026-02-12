@@ -16,7 +16,7 @@ export const validatePhone = (phone: string): boolean => {
   return phoneRegex.test(phone);
 };
 
-export const validateRequired = (value: any, fieldName: string): void => {
+export const validateRequired = (value: unknown, fieldName: string): void => {
   if (value === undefined || value === null || value === '') {
     throw new ValidationError(`${fieldName} is required`);
   }
