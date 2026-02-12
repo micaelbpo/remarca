@@ -164,6 +164,339 @@ Resources:
         EntryPoints:
           - src/handlers/health.ts
 
+  # Patient Functions
+  CreatePatientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/patients.createPatient
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CreatePatientApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /patients
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/patients.ts
+
+  GetPatientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/patients.getPatient
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetPatientApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /patients/{id}
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/patients.ts
+
+  ListPatientsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/patients.listPatients
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        ListPatientsApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /patients
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/patients.ts
+
+  UpdatePatientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/patients.updatePatient
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        UpdatePatientApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /patients/{id}
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/patients.ts
+
+  DeletePatientFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/patients.deletePatient
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        DeletePatientApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /patients/{id}
+            Method: DELETE
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/patients.ts
+
+  # Professional Functions
+  CreateProfessionalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/professionals.createProfessional
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CreateProfessionalApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /professionals
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/professionals.ts
+
+  GetProfessionalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/professionals.getProfessional
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetProfessionalApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /professionals/{id}
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/professionals.ts
+
+  UpdateProfessionalFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/professionals.updateProfessional
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        UpdateProfessionalApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /professionals/{id}
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/professionals.ts
+
+  SetAvailabilityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/professionals.setAvailability
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        SetAvailabilityApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /professionals/{id}/availability
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/professionals.ts
+
+  GetAvailabilityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/professionals.getAvailability
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetAvailabilityApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /professionals/{id}/availability
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/professionals.ts
+
+  # Product Functions
+  CreateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/products.createProduct
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CreateProductApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /products
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/products.ts
+
+  GetProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/products.getProduct
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetProductApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /products/{id}
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/products.ts
+
+  ListProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/products.listProducts
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        ListProductsApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /products
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/products.ts
+
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/products.updateProduct
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        UpdateProductApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /products/{id}
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/products.ts
+
+  DeactivateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/products.deactivateProduct
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        DeactivateProductApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /products/{id}
+            Method: DELETE
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/products.ts
+
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL
