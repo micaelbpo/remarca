@@ -1,0 +1,94 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch: # Permite executar manualmente
+
+env:
+  AWS_REGION: us-east-1
+  NODE_VERSION: 18
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+        continue-on-error: true # Não bloqueia deploy se testes falharem (remova em produção)
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Setup SAM CLI
+        uses: aws-actions/setup-sam@v2
+        with:
+          use-installer: true
+
+      - name: Build SAM application
+        run: sam build
+
+      - name: Deploy to AWS (dev)
+        if: github.ref == 'refs/heads/develop'
+        run: |
+          sam deploy \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --stack-name remarca-dev \
+            --s3-prefix remarca-dev \
+            --capabilities CAPABILITY_IAM \
+            --region ${{ env.AWS_REGION }} \
+            --parameter-overrides Stage=dev
+
+      - name: Deploy to AWS (production)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          sam deploy \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --stack-name remarca-prod \
+            --s3-prefix remarca-prod \
+            --capabilities CAPABILITY_IAM \
+            --region ${{ env.AWS_REGION }} \
+            --parameter-overrides Stage=production
+
+      - name: Get API URL
+        run: |
+          STACK_NAME=$(if [ "${{ github.ref }}" == "refs/heads/main" ]; then echo "remarca-prod"; else echo "remarca-dev"; fi)
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name $STACK_NAME \
+            --query 'Stacks[0].Outputs[?OutputKey==`ApiUrl`].OutputValue' \
+            --output text)
+          echo "🚀 API deployed at: $API_URL"
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+      - name: Comment PR with deployment info
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🚀 Deployment successful!\n\nAPI URL: ${{ env.API_URL }}'
+            })

@@ -1,0 +1,25 @@
+version = 0.1
+
+[default.deploy.parameters]
+stack_name = "remarca-dev"
+resolve_s3 = true
+s3_prefix = "remarca-dev"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=dev"
+
+[dev.deploy.parameters]
+stack_name = "remarca-dev"
+resolve_s3 = true
+s3_prefix = "remarca-dev"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=dev"
+
+[production.deploy.parameters]
+stack_name = "remarca-prod"
+resolve_s3 = true
+s3_prefix = "remarca-prod"
+region = "us-east-1"
+capabilities = "CAPABILITY_IAM"
+parameter_overrides = "Stage=production"
