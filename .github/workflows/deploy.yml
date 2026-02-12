@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install esbuild globally
+        run: npm install -g esbuild
+
       - name: Run tests
         run: npm test -- --passWithNoTests
         continue-on-error: true # Não bloqueia deploy se testes falharem (remova em produção)
