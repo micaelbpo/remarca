@@ -497,6 +497,51 @@ Resources:
         EntryPoints:
           - src/handlers/products.ts
 
+  # Availability Functions
+  GetAvailableSlotsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/availability.getAvailableSlots
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetAvailableSlotsApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /availability
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/availability.ts
+
+  CheckSlotAvailabilityFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/availability.checkSlotAvailability
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CheckSlotAvailabilityApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /availability/check
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/availability.ts
+
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL

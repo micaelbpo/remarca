@@ -207,6 +207,31 @@ Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/d
     -Method Delete
 ```
 
+## Availability Endpoints
+
+### 1. Get Available Slots
+
+```powershell
+$professionalId = "PROFESSIONAL_ID_AQUI"
+$productId = "PRODUCT_ID_AQUI"
+$startDate = "2024-03-01"
+$endDate = "2024-03-31"
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/availability?professionalId=$professionalId&tenantId=tenant-001&productId=$productId&startDate=$startDate&endDate=$endDate" `
+    -Method Get
+```
+
+### 2. Check Specific Slot Availability
+
+```powershell
+$professionalId = "PROFESSIONAL_ID_AQUI"
+$productId = "PRODUCT_ID_AQUI"
+$startDateTime = "2024-03-15T10:00:00Z"
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/availability/check?professionalId=$professionalId&tenantId=tenant-001&productId=$productId&startDateTime=$startDateTime" `
+    -Method Get
+```
+
 ## Notes
 
 - Substitua `PATIENT_ID_AQUI`, `PROFESSIONAL_ID_AQUI`, e `PRODUCT_ID_AQUI` pelos IDs retornados ao criar os recursos
@@ -214,3 +239,5 @@ Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/d
 - O `tenantId` é usado para isolamento multi-tenant
 - Produtos são soft-deleted (marcados como inativos) ao invés de removidos permanentemente
 - A disponibilidade do profissional usa formato de horários semanais com slots de início e fim
+- Os slots disponíveis são calculados baseados na disponibilidade configurada, duração do produto, e consultas já agendadas
+- Datas devem estar no formato ISO 8601 (YYYY-MM-DD para datas, YYYY-MM-DDTHH:mm:ssZ para datetime)

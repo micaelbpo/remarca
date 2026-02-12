@@ -82,24 +82,26 @@ export interface Product {
 
 // Availability Types
 export interface TimeSlot {
-  startTime: string; // HH:mm format
-  endTime: string; // HH:mm format
+  start?: string; // HH:mm format (for simple format)
+  end?: string; // HH:mm format (for simple format)
+  startTime?: string; // HH:mm format (for detailed format)
+  endTime?: string; // HH:mm format (for detailed format)
 }
 
 export interface DaySchedule {
-  enabled: boolean;
-  slots: TimeSlot[];
+  enabled?: boolean;
+  slots?: TimeSlot[];
 }
 
-export interface WeeklySchedule {
-  monday?: DaySchedule;
-  tuesday?: DaySchedule;
-  wednesday?: DaySchedule;
-  thursday?: DaySchedule;
-  friday?: DaySchedule;
-  saturday?: DaySchedule;
-  sunday?: DaySchedule;
-}
+export type WeeklySchedule = {
+  monday?: TimeSlot[] | DaySchedule;
+  tuesday?: TimeSlot[] | DaySchedule;
+  wednesday?: TimeSlot[] | DaySchedule;
+  thursday?: TimeSlot[] | DaySchedule;
+  friday?: TimeSlot[] | DaySchedule;
+  saturday?: TimeSlot[] | DaySchedule;
+  sunday?: TimeSlot[] | DaySchedule;
+};
 
 export interface Availability {
   professionalId: string;
