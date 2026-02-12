@@ -52,7 +52,7 @@ export const validatePayload = <T extends Record<string, unknown>>(
   payload: unknown,
   requiredFields: (keyof T)[]
 ): void => {
-  const typedPayload = payload as Record<string, unknown>;
+  const typedPayload = payload as T;
   for (const field of requiredFields) {
     validateRequired(typedPayload[field], String(field));
   }
