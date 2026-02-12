@@ -8,7 +8,7 @@ const logger = createLogger('NotificationService');
  * TODO: Implement SES email sending
  */
 export class NotificationService {
-  async sendEmail(to: string, template: string, data: Record<string, unknown>): Promise<void> {
+  async sendEmail(to: string, template: string, _data: Record<string, unknown>): Promise<void> {
     logger.info('Sending email (stub)', { to, template });
     // TODO: Implement SES email sending
   }
@@ -18,7 +18,7 @@ export class NotificationService {
     // TODO: Send emails to patient and professional
   }
 
-  async notifyAppointmentRescheduled(appointment: Appointment, oldDateTime: string): Promise<void> {
+  async notifyAppointmentRescheduled(appointment: Appointment, _oldDateTime: string): Promise<void> {
     logger.info('Notifying appointment rescheduled (stub)', { appointmentId: appointment.appointmentId });
     // TODO: Send emails to patient and professional
   }

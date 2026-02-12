@@ -8,7 +8,7 @@ const logger = createLogger('GoogleCalendarService');
  * TODO: Implement full Google Calendar API integration
  */
 export class GoogleCalendarService {
-  async authorizeCalendar(professionalId: string, authCode: string): Promise<void> {
+  async authorizeCalendar(professionalId: string, _authCode: string): Promise<void> {
     logger.info('Google Calendar authorization (stub)', { professionalId });
     // TODO: Implement OAuth2 flow
   }
@@ -19,7 +19,7 @@ export class GoogleCalendarService {
     return `gcal-event-${appointment.appointmentId}`;
   }
 
-  async updateEvent(professionalId: string, eventId: string, appointment: Appointment): Promise<void> {
+  async updateEvent(professionalId: string, eventId: string, _appointment: Appointment): Promise<void> {
     logger.info('Updating Google Calendar event (stub)', { professionalId, eventId });
     // TODO: Implement event update
   }
