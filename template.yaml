@@ -542,6 +542,117 @@ Resources:
         EntryPoints:
           - src/handlers/availability.ts
 
+  # Appointment Functions
+  CreateAppointmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/appointments.createAppointment
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CreateAppointmentApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /appointments
+            Method: POST
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/appointments.ts
+
+  GetAppointmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/appointments.getAppointment
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        GetAppointmentApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /appointments/{id}
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/appointments.ts
+
+  ListAppointmentsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/appointments.listAppointments
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        ListAppointmentsApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /appointments
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/appointments.ts
+
+  RescheduleAppointmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/appointments.rescheduleAppointment
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        RescheduleAppointmentApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /appointments/{id}/reschedule
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/appointments.ts
+
+  CancelAppointmentFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/appointments.cancelAppointment
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        CancelAppointmentApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /appointments/{id}/cancel
+            Method: PUT
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/appointments.ts
+
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL

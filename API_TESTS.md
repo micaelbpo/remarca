@@ -232,12 +232,107 @@ Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/d
     -Method Get
 ```
 
+## Appointment Endpoints
+
+### 1. Create Appointment
+
+```powershell
+$patientId = "PATIENT_ID_AQUI"
+$professionalId = "PROFESSIONAL_ID_AQUI"
+$productId = "PRODUCT_ID_AQUI"
+$dateTime = "2024-03-15T10:00:00Z"
+
+$body = @{
+    patientId = $patientId
+    professionalId = $professionalId
+    productId = $productId
+    dateTime = $dateTime
+    tenantId = "tenant-001"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments" `
+    -Method Post `
+    -Body $body `
+    -ContentType "application/json"
+```
+
+### 2. Get Appointment by ID
+
+```powershell
+$appointmentId = "APPOINTMENT_ID_AQUI"
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments/$appointmentId?tenantId=tenant-001" `
+    -Method Get
+```
+
+### 3. List Appointments
+
+```powershell
+# List all appointments for tenant
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments?tenantId=tenant-001" `
+    -Method Get
+
+# List appointments by patient
+$patientId = "PATIENT_ID_AQUI"
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments?patientId=$patientId" `
+    -Method Get
+
+# List appointments by professional
+$professionalId = "PROFESSIONAL_ID_AQUI"
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments?professionalId=$professionalId" `
+    -Method Get
+
+# List appointments by status
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments?tenantId=tenant-001&status=SCHEDULED" `
+    -Method Get
+
+# List appointments by date range
+$startDate = "2024-03-01"
+$endDate = "2024-03-31"
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments?tenantId=tenant-001&startDate=$startDate&endDate=$endDate" `
+    -Method Get
+```
+
+### 4. Reschedule Appointment
+
+```powershell
+$appointmentId = "APPOINTMENT_ID_AQUI"
+$newDateTime = "2024-03-16T14:00:00Z"
+
+$body = @{
+    newDateTime = $newDateTime
+    rescheduledBy = "USER_ID_AQUI"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments/$appointmentId/reschedule?tenantId=tenant-001" `
+    -Method Put `
+    -Body $body `
+    -ContentType "application/json"
+```
+
+### 5. Cancel Appointment
+
+```powershell
+$appointmentId = "APPOINTMENT_ID_AQUI"
+
+$body = @{
+    cancelledBy = "USER_ID_AQUI"
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "https://net3xvxf4e.execute-api.us-east-1.amazonaws.com/dev/appointments/$appointmentId/cancel?tenantId=tenant-001" `
+    -Method Put `
+    -Body $body `
+    -ContentType "application/json"
+```
+
 ## Notes
 
-- Substitua `PATIENT_ID_AQUI`, `PROFESSIONAL_ID_AQUI`, e `PRODUCT_ID_AQUI` pelos IDs retornados ao criar os recursos
+- Substitua `PATIENT_ID_AQUI`, `PROFESSIONAL_ID_AQUI`, `PRODUCT_ID_AQUI`, e `APPOINTMENT_ID_AQUI` pelos IDs retornados ao criar os recursos
 - Todos os dados sensíveis (email, telefone, Google Calendar tokens) são criptografados automaticamente
 - O `tenantId` é usado para isolamento multi-tenant
 - Produtos são soft-deleted (marcados como inativos) ao invés de removidos permanentemente
 - A disponibilidade do profissional usa formato de horários semanais com slots de início e fim
 - Os slots disponíveis são calculados baseados na disponibilidade configurada, duração do produto, e consultas já agendadas
 - Datas devem estar no formato ISO 8601 (YYYY-MM-DD para datas, YYYY-MM-DDTHH:mm:ssZ para datetime)
+- Consultas só podem ser agendadas para datas futuras
+- Consultas canceladas não podem ser reagendadas
+- O sistema valida automaticamente se o slot está disponível antes de criar/reagendar

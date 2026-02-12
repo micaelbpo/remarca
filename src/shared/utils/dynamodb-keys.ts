@@ -49,15 +49,14 @@ export const availabilityKeys = (professionalId: string): DynamoDBKeys => ({
 export const appointmentKeys = (
   appointmentId: string,
   tenantId: string,
-  patientId: string,
   professionalId: string,
   dateTime: string
 ): DynamoDBKeys => ({
   PK: `TENANT#${tenantId}`,
   SK: `APPOINTMENT#${appointmentId}`,
-  GSI1PK: `PATIENT#${patientId}`,
+  GSI1PK: `PROFESSIONAL#${professionalId}`,
   GSI1SK: `APPOINTMENT#${dateTime}`,
-  GSI2PK: `PROFESSIONAL#${professionalId}`,
+  GSI2PK: `PATIENT#${appointmentId}`, // Will be updated with actual patientId when creating
   GSI2SK: `APPOINTMENT#${dateTime}`,
 });
 
