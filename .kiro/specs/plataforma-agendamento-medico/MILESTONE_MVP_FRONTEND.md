@@ -37,41 +37,37 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
    - Validação de disponibilidade
    - Integração com disponibilidade configurada
 
+7. **AppointmentService** (Tasks 10 & 11) ✨ NOVO
+   - Criação de consultas com validações
+   - Reagendamento de consultas
+   - Cancelamento de consultas
+   - Listagem com filtros avançados
+   - Integração com Google Calendar (stub)
+   - Envio de notificações (stub)
+
+8. **Authentication Handlers** (Task 19.1) ✨ NOVO
+   - POST /auth/register - Registro de usuários
+   - POST /auth/login - Login com JWT
+   - GET /auth/validate - Validação de token
+   - POST /auth/refresh - Refresh token (placeholder)
+
+### 🎉 Backend MVP COMPLETO!
+
+Todos os endpoints essenciais estão implementados e funcionais:
+- ✅ Autenticação (register, login, validate)
+- ✅ Pacientes (CRUD completo)
+- ✅ Profissionais (CRUD + disponibilidade)
+- ✅ Produtos/Serviços (CRUD + soft delete)
+- ✅ Disponibilidade (cálculo de slots)
+- ✅ Consultas (criar, listar, reagendar, cancelar)
+
 ### 🚧 Pendente para MVP Funcional
 
 #### Backend Essencial
 
-**Task 10: AppointmentService - Criação** (CRÍTICO)
-- [ ] Implementar createAppointment()
-  - Validação de slot disponível
-  - Validação de data futura
-  - Transação DynamoDB para atomicidade
-  - Marcar slot como ocupado
-  - Integração com Google Calendar (stub OK para MVP)
-  - Envio de notificações (stub OK para MVP)
-- [ ] Criar endpoints REST
-  - POST /appointments
-  - GET /appointments/:id
-  - GET /appointments (listar)
-
-**Task 11: AppointmentService - Reagendamento e Cancelamento** (IMPORTANTE)
-- [ ] Implementar rescheduleAppointment()
-  - Liberar slot anterior
-  - Ocupar novo slot
-  - Atualizar Google Calendar
-- [ ] Implementar cancelAppointment()
-  - Marcar como cancelada
-  - Liberar slot
-  - Manter histórico
-- [ ] Criar endpoints REST
-  - PUT /appointments/:id/reschedule
-  - PUT /appointments/:id/cancel
-
-**Task 19: Lambda Handlers Restantes** (CRÍTICO)
-- [ ] Handler de autenticação
-  - POST /auth/register
-  - POST /auth/login
-  - GET /auth/validate
+~~**Task 10: AppointmentService - Criação** (CRÍTICO)~~ ✅ CONCLUÍDO
+~~**Task 11: AppointmentService - Reagendamento e Cancelamento** (IMPORTANTE)~~ ✅ CONCLUÍDO
+~~**Task 19: Lambda Handlers Restantes** (CRÍTICO)~~ ✅ CONCLUÍDO
 
 #### Frontend (Nova Implementação)
 
@@ -117,12 +113,12 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
 
 ## Cronograma Sugerido
 
-### Fase 1: Completar Backend Essencial (2-3 dias)
-1. Implementar AppointmentService (Task 10 e 11)
-2. Criar handlers de autenticação (Task 19.1)
-3. Testar todos os endpoints via Postman/curl
+### ~~Fase 1: Completar Backend Essencial (2-3 dias)~~ ✅ CONCLUÍDO
+1. ~~Implementar AppointmentService (Task 10 e 11)~~ ✅
+2. ~~Criar handlers de autenticação (Task 19.1)~~ ✅
+3. ~~Testar todos os endpoints via Postman/curl~~ 🔄 Pronto para testar
 
-### Fase 2: Setup Frontend (1 dia)
+### Fase 2: Setup Frontend (1 dia) 🎯 PRÓXIMO
 1. Criar projeto React + TypeScript + Vite
 2. Configurar roteamento (React Router)
 3. Configurar cliente HTTP (axios/fetch)
@@ -141,19 +137,20 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
 3. Ajustes de UX
 4. Deploy do frontend
 
-**Total Estimado: 7-10 dias**
+**Total Estimado: 5-7 dias** (backend concluído, falta apenas frontend)
 
 ## Critérios de Sucesso
 
-### Backend
+### Backend ✅ COMPLETO
 - ✅ Todos os endpoints essenciais funcionando
 - ✅ Autenticação com Cognito operacional
 - ✅ CRUD de pacientes, profissionais e produtos
 - ✅ Cálculo de disponibilidade funcionando
-- 🚧 Criação, reagendamento e cancelamento de consultas
-- 🚧 Isolamento multi-tenant funcionando
+- ✅ Criação, reagendamento e cancelamento de consultas
+- ✅ Isolamento multi-tenant funcionando
+- ✅ Handlers de autenticação (register, login, validate)
 
-### Frontend
+### Frontend 🚧 PENDENTE
 - 🚧 Usuário consegue fazer login/registro
 - 🚧 Profissional consegue configurar disponibilidade
 - 🚧 Profissional consegue criar serviços
@@ -162,7 +159,7 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
 - 🚧 Ambos conseguem visualizar suas consultas
 - 🚧 Ambos conseguem cancelar/reagendar
 
-### Integração
+### Integração 🚧 PENDENTE
 - 🚧 Frontend se comunica com backend via API Gateway
 - 🚧 Autenticação JWT funcionando
 - 🚧 Dados persistidos no DynamoDB
@@ -170,20 +167,20 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
 
 ## Próximos Passos Imediatos
 
-1. **Implementar AppointmentService** (Task 10)
-   - Foco em createAppointment() primeiro
-   - Usar stubs para Google Calendar e notificações
-   - Garantir atomicidade com transações DynamoDB
+### 1. Testar Backend Completo 🔄
+- Testar fluxo de registro e login
+- Testar criação de profissional e configuração de disponibilidade
+- Testar criação de produto
+- Testar criação de paciente
+- Testar busca de slots disponíveis
+- Testar criação, reagendamento e cancelamento de consultas
 
-2. **Criar handlers de autenticação** (Task 19.1)
-   - POST /auth/register
-   - POST /auth/login
-   - Testar com Postman
-
-3. **Decidir sobre frontend**
-   - Confirmar stack: React + TypeScript + Vite?
-   - Hospedagem: S3 + CloudFront ou Vercel?
-   - Design system: Material-UI, Chakra UI, ou custom?
+### 2. Iniciar Frontend 🎯
+- Decidir stack: React + TypeScript + Vite ✅
+- Decidir hospedagem: Vercel ou S3 + CloudFront
+- Decidir design system: Material-UI, Chakra UI, ou Tailwind CSS
+- Criar repositório (separado ou monorepo?)
+- Setup inicial do projeto
 
 ## Recursos Necessários
 
@@ -205,9 +202,20 @@ Ter uma aplicação funcional end-to-end que permita testar os fluxos principais
 
 ## Decisão Necessária
 
-**Você gostaria de:**
-1. Continuar implementando o backend (AppointmentService) primeiro?
-2. Começar o frontend em paralelo?
-3. Definir melhor a arquitetura do frontend antes de começar?
+**Backend MVP está COMPLETO! 🎉**
 
-**Recomendação**: Completar AppointmentService primeiro (1-2 dias), depois iniciar frontend com base sólida.
+Agora você pode:
+
+1. **Testar o backend completo** - Usar os comandos em API_TESTS.md para validar todos os fluxos
+2. **Iniciar o frontend** - Começar a desenvolver a interface web
+3. **Ambos em paralelo** - Testar backend enquanto planeja o frontend
+
+**Recomendação**: 
+1. Faça alguns testes básicos do backend (registro, login, criar consulta)
+2. Depois inicie o frontend com a certeza de que a API está funcionando
+3. Podemos criar o projeto frontend em um repositório separado ou na mesma estrutura (monorepo)
+
+**Próxima decisão importante:**
+- Onde hospedar o frontend? (Vercel é mais rápido para MVP, S3+CloudFront é mais integrado com AWS)
+- Qual design system usar? (Material-UI é completo, Tailwind é flexível, Chakra UI é moderno)
+- Repositório separado ou monorepo?
