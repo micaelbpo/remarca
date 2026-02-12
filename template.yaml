@@ -141,6 +141,29 @@ Resources:
     Metadata:
       BuildMethod: nodejs18.x
 
+  # Health Check Function
+  HealthFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/health.handler
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        HealthApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /health
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/health.ts
+
 Outputs:
   ApiUrl:
     Description: API Gateway endpoint URL
