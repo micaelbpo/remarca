@@ -133,7 +133,7 @@ export interface DynamoDBKeys {
 }
 
 // API Response Types
-export interface ApiResponse<T = unknown> {
+export interface ApiResponse {
   statusCode: number;
   body: string;
   headers?: Record<string, string>;
