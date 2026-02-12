@@ -134,36 +134,38 @@ export const encryptionService = new EncryptionService();
 /**
  * Helper functions for encrypting/decrypting specific fields
  */
-export const encryptSensitiveFields = <T extends Record<string, unknown>>(
+export const encryptSensitiveFields = <T extends object>(
   obj: T,
   fields: (keyof T)[]
 ): T => {
-  const encrypted = { ...obj };
+  const encrypted = { ...obj } as Record<string, unknown>;
 
   fields.forEach((field) => {
-    if (encrypted[field]) {
-      encrypted[field] = encryptionService.encrypt(String(encrypted[field])) as T[keyof T];
+    const key = field as string;
+    if (encrypted[key]) {
+      encrypted[key] = encryptionService.encrypt(String(encrypted[key]));
     }
   });
 
-  return encrypted;
+  return encrypted as T;
 };
 
-export const decryptSensitiveFields = <T extends Record<string, unknown>>(
+export const decryptSensitiveFields = <T extends object>(
   obj: T,
   fields: (keyof T)[]
 ): T => {
-  const decrypted = { ...obj };
+  const decrypted = { ...obj } as Record<string, unknown>;
 
   fields.forEach((field) => {
-    if (decrypted[field]) {
+    const key = field as string;
+    if (decrypted[key]) {
       try {
-        decrypted[field] = encryptionService.decrypt(String(decrypted[field])) as T[keyof T];
+        decrypted[key] = encryptionService.decrypt(String(decrypted[key]));
       } catch (error) {
         logger.warn(`Failed to decrypt field: ${String(field)}`);
       }
     }
   });
 
-  return decrypted;
+  return decrypted as T;
 };
