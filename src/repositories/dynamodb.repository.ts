@@ -103,7 +103,7 @@ export class DynamoDBRepository {
    */
   async query<T extends DynamoDBKeys>(
     keyCondition: string,
-    expressionValues: Record<string, any>,
+    expressionValues: Record<string, unknown>,
     options?: {
       indexName?: string;
       limit?: number;
@@ -153,7 +153,7 @@ export class DynamoDBRepository {
       // Build update expression
       const updateExpressions: string[] = [];
       const expressionAttributeNames: Record<string, string> = {};
-      const expressionAttributeValues: Record<string, any> = {};
+      const expressionAttributeValues: Record<string, unknown> = {};
 
       Object.entries(updates).forEach(([key, value], index) => {
         if (key !== 'PK' && key !== 'SK') {
@@ -227,10 +227,10 @@ export class DynamoDBRepository {
       await this.docClient.send(command);
 
       logger.info('Transaction completed successfully', { itemCount: items.length });
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Transaction failed', error);
 
-      if (error.name === 'TransactionCanceledException') {
+      if (error && typeof error === 'object' && 'name' in error && error.name === 'TransactionCanceledException') {
         throw new RepositoryError('Transaction cancelled - possible conflict');
       }
 

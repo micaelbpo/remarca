@@ -2,8 +2,6 @@ import {
   CognitoIdentityProviderClient,
   SignUpCommand,
   InitiateAuthCommand,
-  AdminSetUserPasswordCommand,
-  AdminUpdateUserAttributesCommand,
   AuthFlowType,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
@@ -83,15 +81,17 @@ export class AuthService implements AuthServiceInterface {
         userId: response.UserSub!,
         email: input.email,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Failed to register user', error, { email: input.email });
 
-      if (error.name === 'UsernameExistsException') {
-        throw new AuthenticationError('Email already registered');
-      }
+      if (error && typeof error === 'object' && 'name' in error) {
+        if (error.name === 'UsernameExistsException') {
+          throw new AuthenticationError('Email already registered');
+        }
 
-      if (error.name === 'InvalidPasswordException') {
-        throw new ValidationError('Password does not meet requirements');
+        if (error.name === 'InvalidPasswordException') {
+          throw new ValidationError('Password does not meet requirements');
+        }
       }
 
       throw new AuthenticationError('Failed to register user');
@@ -128,15 +128,13 @@ export class AuthService implements AuthServiceInterface {
         refreshToken: response.AuthenticationResult.RefreshToken!,
         expiresIn: response.AuthenticationResult.ExpiresIn!,
       };
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Login failed', error, { email: input.email });
 
-      if (error.name === 'NotAuthorizedException') {
-        throw new AuthenticationError('Invalid email or password');
-      }
-
-      if (error.name === 'UserNotFoundException') {
-        throw new AuthenticationError('Invalid email or password');
+      if (error && typeof error === 'object' && 'name' in error) {
+        if (error.name === 'NotAuthorizedException' || error.name === 'UserNotFoundException') {
+          throw new AuthenticationError('Invalid email or password');
+        }
       }
 
       throw new AuthenticationError('Login failed');
@@ -163,10 +161,10 @@ export class AuthService implements AuthServiceInterface {
       logger.debug('Token validated successfully', { userId: tokenPayload.userId });
 
       return tokenPayload;
-    } catch (error: any) {
+    } catch (error: unknown) {
       logger.error('Token validation failed', error);
 
-      if (error.name === 'JwtExpiredError') {
+      if (error && typeof error === 'object' && 'name' in error && error.name === 'JwtExpiredError') {
         throw new TokenExpiredError();
       }
 

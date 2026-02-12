@@ -1,5 +1,5 @@
 export class ValidationError extends Error {
-  constructor(message: string, public details?: any) {
+  constructor(message: string, public details?: unknown) {
     super(message);
     this.name = 'ValidationError';
   }
@@ -48,11 +48,12 @@ export const sanitizeInput = (input: string): string => {
     .trim();
 };
 
-export const validatePayload = <T>(
-  payload: any,
+export const validatePayload = <T extends Record<string, unknown>>(
+  payload: unknown,
   requiredFields: (keyof T)[]
 ): void => {
+  const typedPayload = payload as Record<string, unknown>;
   for (const field of requiredFields) {
-    validateRequired(payload[field], String(field));
+    validateRequired(typedPayload[field], String(field));
   }
 };

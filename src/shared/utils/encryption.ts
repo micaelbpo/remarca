@@ -134,7 +134,7 @@ export const encryptionService = new EncryptionService();
 /**
  * Helper functions for encrypting/decrypting specific fields
  */
-export const encryptSensitiveFields = <T extends Record<string, any>>(
+export const encryptSensitiveFields = <T extends Record<string, unknown>>(
   obj: T,
   fields: (keyof T)[]
 ): T => {
@@ -149,7 +149,7 @@ export const encryptSensitiveFields = <T extends Record<string, any>>(
   return encrypted;
 };
 
-export const decryptSensitiveFields = <T extends Record<string, any>>(
+export const decryptSensitiveFields = <T extends Record<string, unknown>>(
   obj: T,
   fields: (keyof T)[]
 ): T => {

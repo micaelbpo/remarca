@@ -12,7 +12,7 @@ class Logger {
     this.context = context;
   }
 
-  private log(level: LogLevel, message: string, meta?: any) {
+  private log(level: LogLevel, message: string, meta?: unknown) {
     const logEntry = {
       timestamp: new Date().toISOString(),
       level,
@@ -24,19 +24,19 @@ class Logger {
     console.log(JSON.stringify(logEntry));
   }
 
-  debug(message: string, meta?: any) {
+  debug(message: string, meta?: unknown) {
     this.log(LogLevel.DEBUG, message, meta);
   }
 
-  info(message: string, meta?: any) {
+  info(message: string, meta?: unknown) {
     this.log(LogLevel.INFO, message, meta);
   }
 
-  warn(message: string, meta?: any) {
+  warn(message: string, meta?: unknown) {
     this.log(LogLevel.WARN, message, meta);
   }
 
-  error(message: string, error?: Error | any, meta?: any) {
+  error(message: string, error?: Error | unknown, meta?: unknown) {
     this.log(LogLevel.ERROR, message, {
       ...meta,
       error: error instanceof Error ? {

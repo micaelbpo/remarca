@@ -19,7 +19,7 @@ export const errorResponse = (
   code: string,
   message: string,
   statusCode: number = 500,
-  details?: any
+  details?: unknown
 ): ApiResponse => {
   const errorBody: ErrorResponse = {
     error: {
@@ -38,7 +38,7 @@ export const errorResponse = (
   };
 };
 
-export const validationError = (message: string, details?: any): ApiResponse => {
+export const validationError = (message: string, details?: unknown): ApiResponse => {
   return errorResponse('VALIDATION_ERROR', message, 400, details);
 };
 
@@ -54,7 +54,7 @@ export const notFoundError = (message: string = 'Resource not found'): ApiRespon
   return errorResponse('NOT_FOUND', message, 404);
 };
 
-export const conflictError = (message: string, details?: any): ApiResponse => {
+export const conflictError = (message: string, details?: unknown): ApiResponse => {
   return errorResponse('CONFLICT', message, 409, details);
 };
 
