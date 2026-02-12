@@ -25,7 +25,8 @@ export class AuthService implements AuthServiceInterface {
   private cognitoClient: CognitoIdentityProviderClient;
   private userPoolId: string;
   private clientId: string;
-  private jwtVerifier: CognitoJwtVerifier;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private jwtVerifier: any;
 
   constructor() {
     this.cognitoClient = new CognitoIdentityProviderClient({
