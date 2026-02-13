@@ -60,6 +60,8 @@ export class AuthService implements AuthServiceInterface {
       throw new ValidationError('Invalid email format');
     }
 
+    let cognitoUserId: string | undefined;
+
     try {
       // Create user in Cognito (only standard attributes)
       const signUpCommand = new SignUpCommand({
@@ -73,16 +75,17 @@ export class AuthService implements AuthServiceInterface {
       });
 
       const response = await this.cognitoClient.send(signUpCommand);
+      cognitoUserId = response.UserSub;
 
-      logger.info('User registered successfully in Cognito', { userId: response.UserSub });
+      logger.info('User registered successfully in Cognito', { userId: cognitoUserId });
 
       // Store additional user info in DynamoDB
       const dynamoRepository = new (await import('../../repositories/dynamodb.repository')).DynamoDBRepository();
       
       const userProfile: Record<string, any> = {
-        PK: `USER#${response.UserSub}`,
+        PK: `USER#${cognitoUserId}`,
         SK: `PROFILE`,
-        id: response.UserSub!,
+        id: cognitoUserId!,
         email: input.email,
         name: input.name,
         tenantId: input.tenantId,
@@ -96,16 +99,18 @@ export class AuthService implements AuthServiceInterface {
         userProfile.phone = input.phone;
       }
       
+      logger.info('Attempting to save user profile to DynamoDB', { userId: cognitoUserId, profile: userProfile });
+      
       await dynamoRepository.put(userProfile);
 
-      logger.info('User profile stored in DynamoDB', { userId: response.UserSub });
+      logger.info('User profile stored in DynamoDB successfully', { userId: cognitoUserId });
 
       return {
-        userId: response.UserSub!,
+        userId: cognitoUserId!,
         email: input.email,
       };
     } catch (error: unknown) {
-      logger.error('Failed to register user', error, { email: input.email });
+      logger.error('Failed to register user', error, { email: input.email, cognitoUserId });
 
       // Check if it's a RepositoryError (DynamoDB error)
       if (error && typeof error === 'object' && 'message' in error) {
