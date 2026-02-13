@@ -104,10 +104,10 @@ export const login = async (
     const payload = await authService.validateToken(tokens.accessToken);
     const dynamoRepository = new (await import('../repositories/dynamodb.repository')).DynamoDBRepository();
     
-    const userProfile = await dynamoRepository.get({
-      PK: `USER#${payload.sub}`,
-      SK: 'PROFILE',
-    });
+    const userProfile = await dynamoRepository.get(
+      `USER#${payload.sub}`,
+      'PROFILE'
+    );
 
     return successResponse({
       message: 'Login successful',

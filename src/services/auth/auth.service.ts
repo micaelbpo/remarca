@@ -78,7 +78,7 @@ export class AuthService implements AuthServiceInterface {
       // Store additional user info in DynamoDB
       const dynamoRepository = new (await import('../../repositories/dynamodb.repository')).DynamoDBRepository();
       
-      await dynamoRepository.put({
+      const userProfile: Record<string, any> = {
         PK: `USER#${response.UserSub}`,
         SK: `PROFILE`,
         id: response.UserSub!,
@@ -86,10 +86,16 @@ export class AuthService implements AuthServiceInterface {
         name: input.name,
         tenantId: input.tenantId,
         userType: input.userType,
-        phone: input.phone,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
-      });
+      };
+
+      // Only add phone if provided
+      if (input.phone) {
+        userProfile.phone = input.phone;
+      }
+      
+      await dynamoRepository.put(userProfile);
 
       logger.info('User profile stored in DynamoDB', { userId: response.UserSub });
 
