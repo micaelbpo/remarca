@@ -1,13 +1,17 @@
-node_modules
-.git
-.github
-src
-layers
+# Backend files (keep frontend folder)
+/node_modules
+/.git
+/.github
+/src
+/layers
 *.ps1
-*.md
 template.yaml
 samconfig.toml
 jest.config.js
-tsconfig.json
-package.json
-package-lock.json
+/tsconfig.json
+/package.json
+/package-lock.json
+
+# Documentation (except frontend docs)
+/*.md
+!frontend/**
