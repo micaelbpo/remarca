@@ -6,6 +6,8 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { ConfirmEmail } from './pages/ConfirmEmail';
 import { Dashboard } from './pages/Dashboard';
+import { ProfessionalDashboard } from './pages/ProfessionalDashboard';
+import { PatientDashboard } from './pages/PatientDashboard';
 
 function App() {
   return (
@@ -21,6 +23,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/professional/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['PROFESSIONAL']}>
+                  <ProfessionalDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/patient/dashboard"
+              element={
+                <ProtectedRoute allowedRoles={['PATIENT']}>
+                  <PatientDashboard />
                 </ProtectedRoute>
               }
             />
