@@ -60,7 +60,7 @@ export class AuthService implements AuthServiceInterface {
     }
 
     try {
-      // Create user in Cognito
+      // Create user in Cognito (only standard attributes)
       const signUpCommand = new SignUpCommand({
         ClientId: this.clientId,
         Username: input.email,
@@ -68,15 +68,30 @@ export class AuthService implements AuthServiceInterface {
         UserAttributes: [
           { Name: 'email', Value: input.email },
           { Name: 'name', Value: input.name },
-          { Name: 'custom:tenantId', Value: input.tenantId },
-          { Name: 'custom:userType', Value: input.userType },
-          ...(input.phone ? [{ Name: 'custom:phone', Value: input.phone }] : []),
         ],
       });
 
       const response = await this.cognitoClient.send(signUpCommand);
 
-      logger.info('User registered successfully', { userId: response.UserSub });
+      logger.info('User registered successfully in Cognito', { userId: response.UserSub });
+
+      // Store additional user info in DynamoDB
+      const dynamoRepository = new (await import('../../repositories/dynamodb.repository')).DynamoDBRepository();
+      
+      await dynamoRepository.put({
+        PK: `USER#${response.UserSub}`,
+        SK: `PROFILE`,
+        id: response.UserSub!,
+        email: input.email,
+        name: input.name,
+        tenantId: input.tenantId,
+        userType: input.userType,
+        phone: input.phone,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      });
+
+      logger.info('User profile stored in DynamoDB', { userId: response.UserSub });
 
       return {
         userId: response.UserSub!,

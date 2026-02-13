@@ -100,9 +100,25 @@ export const login = async (
 
     const tokens = await authService.login(input);
 
+    // Get user profile from DynamoDB using the token
+    const payload = await authService.validateToken(tokens.accessToken);
+    const dynamoRepository = new (await import('../repositories/dynamodb.repository')).DynamoDBRepository();
+    
+    const userProfile = await dynamoRepository.get({
+      PK: `USER#${payload.sub}`,
+      SK: 'PROFILE',
+    });
+
     return successResponse({
       message: 'Login successful',
-      ...tokens,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      expiresIn: tokens.expiresIn,
+      user: userProfile || {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+      },
     });
   } catch (error) {
     logger.error('Error logging in', { error });
