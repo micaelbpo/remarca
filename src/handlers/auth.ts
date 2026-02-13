@@ -48,8 +48,8 @@ export const register = async (
       },
       201
     );
-  } catch (error) {
-    logger.error('Error registering user', { error });
+  } catch (error: any) {
+    logger.error('Error registering user', { error, message: error?.message, name: error?.name });
 
     if (error instanceof ValidationError) {
       return validationError(error.message);
@@ -59,7 +59,21 @@ export const register = async (
       return validationError(error.message);
     }
 
-    return internalError();
+    // Cognito specific errors
+    if (error.name === 'UsernameExistsException') {
+      return validationError('Email already registered');
+    }
+
+    if (error.name === 'InvalidPasswordException') {
+      return validationError('Password does not meet requirements: minimum 8 characters, uppercase, lowercase, and numbers');
+    }
+
+    if (error.name === 'InvalidParameterException') {
+      return validationError(`Invalid parameter: ${error.message}`);
+    }
+
+    // Return detailed error in development
+    return validationError(error.message || 'Failed to register user');
   }
 };
 
