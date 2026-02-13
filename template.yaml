@@ -75,8 +75,6 @@ Resources:
     Type: AWS::Cognito::UserPool
     Properties:
       UserPoolName: !Sub remarca-users-${Stage}
-      AutoVerifiedAttributes:
-        - email
       UsernameAttributes:
         - email
       Schema:
@@ -102,6 +100,8 @@ Resources:
           RequireLowercase: true
           RequireNumbers: true
           RequireSymbols: false
+      AdminCreateUserConfig:
+        AllowAdminCreateUserOnly: false
 
   RemarcaUserPoolClient:
     Type: AWS::Cognito::UserPoolClient
@@ -235,6 +235,28 @@ Resources:
             ApiId: !Ref RemarcaApi
             Path: /auth/validate
             Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/auth.ts
+
+  ConfirmSignUpFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/auth.confirm
+      Layers:
+        - !Ref RemarcaLayer
+      Events:
+        ConfirmSignUpApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /auth/confirm
+            Method: POST
     Metadata:
       BuildMethod: esbuild
       BuildProperties:

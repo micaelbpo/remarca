@@ -186,6 +186,43 @@ export const validate = async (
 };
 
 /**
+ * Confirm user signup with verification code
+ * POST /auth/confirm
+ */
+export const confirm = async (
+  event: APIGatewayProxyEventV2
+): Promise<APIGatewayProxyResultV2> => {
+  try {
+    logger.info('Confirm signup request', { path: event.rawPath });
+
+    if (!event.body) {
+      return validationError('Request body is required');
+    }
+
+    const input = JSON.parse(event.body);
+
+    // Validate required fields
+    if (!input.email || !input.code) {
+      return validationError('email and code are required');
+    }
+
+    await authService.confirmSignUp(input.email, input.code);
+
+    return successResponse({
+      message: 'Email confirmed successfully. You can now login.',
+    });
+  } catch (error) {
+    logger.error('Error confirming signup', { error });
+
+    if (error instanceof ValidationError) {
+      return validationError(error.message);
+    }
+
+    return internalError();
+  }
+};
+
+/**
  * Refresh token
  * POST /auth/refresh
  */

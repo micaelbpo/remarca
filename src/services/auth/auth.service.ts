@@ -3,6 +3,7 @@ import {
   SignUpCommand,
   InitiateAuthCommand,
   AuthFlowType,
+  ConfirmSignUpCommand,
 } from '@aws-sdk/client-cognito-identity-provider';
 import { CognitoJwtVerifier } from 'aws-jwt-verify';
 import { createLogger } from '../../shared/utils/logger';
@@ -139,6 +140,42 @@ export class AuthService implements AuthServiceInterface {
   }
 
   /**
+   * Confirm user email with verification code
+   */
+  async confirmSignUp(email: string, code: string): Promise<void> {
+    logger.info('Confirming user signup', { email });
+
+    try {
+      const command = new ConfirmSignUpCommand({
+        ClientId: this.clientId,
+        Username: email,
+        ConfirmationCode: code,
+      });
+
+      await this.cognitoClient.send(command);
+      logger.info('User confirmed successfully', { email });
+    } catch (error: unknown) {
+      logger.error('Failed to confirm user', error, { email });
+
+      if (error && typeof error === 'object' && 'name' in error) {
+        const cognitoError = error as { name: string; message?: string };
+        
+        if (cognitoError.name === 'CodeMismatchException') {
+          throw new ValidationError('Invalid verification code');
+        }
+        
+        if (cognitoError.name === 'ExpiredCodeException') {
+          throw new ValidationError('Verification code has expired');
+        }
+
+        throw new ValidationError(cognitoError.message || 'Failed to confirm user');
+      }
+
+      throw new ValidationError('Failed to confirm user');
+    }
+  }
+
+  /**
    * Authenticate user and return JWT tokens
    * Validates: Requirements 1.1, 1.2
    */
@@ -172,9 +209,23 @@ export class AuthService implements AuthServiceInterface {
       logger.error('Login failed', error, { email: input.email });
 
       if (error && typeof error === 'object' && 'name' in error) {
-        if (error.name === 'NotAuthorizedException' || error.name === 'UserNotFoundException') {
+        const cognitoError = error as { name: string; message?: string };
+        
+        if (cognitoError.name === 'NotAuthorizedException') {
           throw new AuthenticationError('Invalid email or password');
         }
+        
+        if (cognitoError.name === 'UserNotFoundException') {
+          throw new AuthenticationError('User not found');
+        }
+        
+        if (cognitoError.name === 'UserNotConfirmedException') {
+          throw new AuthenticationError('Email not confirmed. Please check your email for confirmation link.');
+        }
+        
+        // Log and throw the actual error message
+        logger.error('Cognito login error', { name: cognitoError.name, message: cognitoError.message });
+        throw new AuthenticationError(cognitoError.message || `Login error: ${cognitoError.name}`);
       }
 
       throw new AuthenticationError('Login failed');
