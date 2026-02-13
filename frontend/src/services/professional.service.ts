@@ -35,15 +35,18 @@ class ProfessionalService {
     return response.data;
   }
 
-  async setAvailability(id: string, schedule: WeeklySchedule): Promise<void> {
-    await api.post(API_ENDPOINTS.PROFESSIONAL_AVAILABILITY(id), { schedule });
+  async setAvailability(id: string, tenantId: string, data: { weeklySchedule: any }): Promise<void> {
+    await api.post(
+      `${API_ENDPOINTS.PROFESSIONAL_AVAILABILITY(id)}?tenantId=${tenantId}`,
+      data
+    );
   }
 
-  async getAvailability(id: string): Promise<WeeklySchedule> {
-    const response = await api.get<{ availability: WeeklySchedule }>(
-      API_ENDPOINTS.PROFESSIONAL_AVAILABILITY(id)
+  async getAvailability(id: string, tenantId: string): Promise<any> {
+    const response = await api.get(
+      `${API_ENDPOINTS.PROFESSIONAL_AVAILABILITY(id)}?tenantId=${tenantId}`
     );
-    return response.data.availability;
+    return response.data;
   }
 }
 

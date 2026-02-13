@@ -31,6 +31,8 @@ import type { Professional, Product } from '../types';
 import { professionalService } from '../services/professional.service';
 import { productService } from '../services/product.service';
 import { ServiceModal } from '../components/ServiceModal';
+import { AvailabilityEditor } from '../components/AvailabilityEditor';
+import { AppointmentList } from '../components/AppointmentList';
 
 export function ProfessionalDashboard() {
   const { user, logout } = useAuth();
@@ -286,9 +288,12 @@ export function ProfessionalDashboard() {
                 <VStack spacing={4} align="stretch">
                   <Heading size="md">Configurar Disponibilidade</Heading>
                   <Box p={6} bg="white" borderRadius="lg">
-                    <Text color="gray.600">
-                      Em breve: Configure seus horários de atendimento por dia da semana
-                    </Text>
+                    {user && (
+                      <AvailabilityEditor
+                        professionalId={user.id}
+                        tenantId={user.tenantId}
+                      />
+                    )}
                   </Box>
                 </VStack>
               </TabPanel>
@@ -297,11 +302,13 @@ export function ProfessionalDashboard() {
               <TabPanel>
                 <VStack spacing={4} align="stretch">
                   <Heading size="md">Minhas Consultas</Heading>
-                  <Box p={6} bg="white" borderRadius="lg">
-                    <Text color="gray.600">
-                      Em breve: Visualize e gerencie suas consultas agendadas
-                    </Text>
-                  </Box>
+                  {user && (
+                    <AppointmentList
+                      tenantId={user.tenantId}
+                      userId={user.id}
+                      userType="PROFESSIONAL"
+                    />
+                  )}
                 </VStack>
               </TabPanel>
             </TabPanels>
