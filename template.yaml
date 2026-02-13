@@ -175,6 +175,9 @@ Resources:
       Handler: dist/handlers/auth.register
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         RegisterApi:
           Type: HttpApi
@@ -197,6 +200,9 @@ Resources:
       Handler: dist/handlers/auth.login
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         LoginApi:
           Type: HttpApi
@@ -219,6 +225,9 @@ Resources:
       Handler: dist/handlers/auth.validate
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         ValidateTokenApi:
           Type: HttpApi
@@ -241,6 +250,9 @@ Resources:
       Handler: dist/handlers/auth.refresh
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         RefreshTokenApi:
           Type: HttpApi
