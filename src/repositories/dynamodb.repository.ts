@@ -62,9 +62,15 @@ export class DynamoDBRepository {
       logger.info('Item put successfully', { PK: item.PK, SK: item.SK });
 
       return item;
-    } catch (error) {
-      logger.error('Failed to put item', error, { PK: item.PK, SK: item.SK });
-      throw new RepositoryError('Failed to put item');
+    } catch (error: any) {
+      logger.error('Failed to put item', error, { 
+        PK: item.PK, 
+        SK: item.SK,
+        errorName: error?.name,
+        errorMessage: error?.message,
+        errorCode: error?.code,
+      });
+      throw new RepositoryError(`Failed to put item: ${error?.message || 'Unknown error'}`);
     }
   }
 

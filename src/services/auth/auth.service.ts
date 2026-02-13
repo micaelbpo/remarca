@@ -106,6 +106,14 @@ export class AuthService implements AuthServiceInterface {
     } catch (error: unknown) {
       logger.error('Failed to register user', error, { email: input.email });
 
+      // Check if it's a RepositoryError (DynamoDB error)
+      if (error && typeof error === 'object' && 'message' in error) {
+        const err = error as { message: string; name?: string };
+        if (err.message?.includes('Failed to put item')) {
+          throw new ValidationError(err.message);
+        }
+      }
+
       if (error && typeof error === 'object' && 'name' in error) {
         const cognitoError = error as { name: string; message?: string };
         
