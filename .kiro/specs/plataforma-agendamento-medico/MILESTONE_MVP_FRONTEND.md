@@ -63,18 +63,22 @@ Todos os endpoints essenciais estão implementados e funcionais:
 
 ### 🚧 Pendente para MVP Funcional
 
-#### Backend Essencial
+#### Frontend (Em Desenvolvimento) 🎯
 
-~~**Task 10: AppointmentService - Criação** (CRÍTICO)~~ ✅ CONCLUÍDO
-~~**Task 11: AppointmentService - Reagendamento e Cancelamento** (IMPORTANTE)~~ ✅ CONCLUÍDO
-~~**Task 19: Lambda Handlers Restantes** (CRÍTICO)~~ ✅ CONCLUÍDO
+**Setup Inicial** ✅ CONCLUÍDO
+- ✅ Projeto React + TypeScript + Vite criado
+- ✅ Chakra UI v2 configurado
+- ✅ React Router configurado
+- ✅ Axios para HTTP requests
+- ✅ Contexto de autenticação (AuthContext)
+- ✅ Serviço de API com interceptors
+- ✅ Proteção de rotas (ProtectedRoute)
+- ✅ Tipos TypeScript sincronizados com backend
 
-#### Frontend (Nova Implementação)
-
-**Tecnologia Sugerida**: React + TypeScript + Vite
-- Rápido para desenvolver
-- TypeScript para type safety
-- Hospedagem: AWS S3 + CloudFront (ou Vercel para MVP)
+**Páginas Implementadas** ✅ BÁSICO COMPLETO
+- ✅ Login - Formulário funcional com validação
+- ✅ Registro - Suporte para PATIENT e PROFESSIONAL
+- ✅ Dashboard - Tela inicial básica após login
 
 **Páginas Essenciais**:
 
