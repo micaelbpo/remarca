@@ -6,6 +6,7 @@ export const API_ENDPOINTS = {
   LOGIN: '/auth/login',
   VALIDATE: '/auth/validate',
   REFRESH: '/auth/refresh',
+  CONFIRM: '/auth/confirm',
   
   // Patients
   PATIENTS: '/patients',

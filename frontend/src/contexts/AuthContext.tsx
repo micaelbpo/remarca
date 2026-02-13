@@ -33,8 +33,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const register = async (data: RegisterData) => {
     await authService.register(data);
-    // After registration, automatically log in
-    await login({ email: data.email, password: data.password });
+    // Don't auto-login - user needs to confirm email first
   };
 
   const logout = () => {

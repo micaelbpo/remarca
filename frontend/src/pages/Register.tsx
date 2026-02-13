@@ -89,11 +89,12 @@ export function Register() {
       
       await register(registerData);
       toast({
-        title: 'Cadastro realizado com sucesso!',
+        title: 'Cadastro realizado!',
+        description: 'Verifique seu email para confirmar o cadastro.',
         status: 'success',
-        duration: 3000,
+        duration: 5000,
       });
-      navigate('/');
+      navigate(`/confirm-email?email=${encodeURIComponent(registerData.email)}`);
     } catch (error: any) {
       toast({
         title: 'Erro ao cadastrar',
