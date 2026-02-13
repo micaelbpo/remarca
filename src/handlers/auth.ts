@@ -109,16 +109,19 @@ export const login = async (
       'PROFILE'
     );
 
+    logger.info('User profile from DynamoDB', { userProfile, userId: payload.sub });
+
+    if (!userProfile) {
+      logger.error('User profile not found in DynamoDB', { userId: payload.sub });
+      return validationError('User profile not found. Please contact support.');
+    }
+
     return successResponse({
       message: 'Login successful',
       accessToken: tokens.accessToken,
       refreshToken: tokens.refreshToken,
       expiresIn: tokens.expiresIn,
-      user: userProfile || {
-        id: payload.sub,
-        email: payload.email,
-        name: payload.name,
-      },
+      user: userProfile,
     });
   } catch (error) {
     logger.error('Error logging in', { error });
