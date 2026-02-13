@@ -60,8 +60,8 @@ export function Register() {
       newErrors.name = 'Nome é obrigatório';
     }
     
-    if (formData.phone && !/^\+?[\d\s\-\(\)]+$/.test(formData.phone)) {
-      newErrors.phone = 'Telefone inválido';
+    if (formData.phone && !/^\+?\d{10,15}$/.test(formData.phone.replace(/[\s\-\(\)]/g, ''))) {
+      newErrors.phone = 'Telefone inválido (use formato: +5511987654321 ou 5511987654321)';
     }
     
     setErrors(newErrors);
@@ -76,6 +76,12 @@ export function Register() {
     setLoading(true);
     try {
       const { confirmPassword, ...registerData } = formData;
+      
+      // Ensure phone has + prefix if provided
+      if (registerData.phone && !registerData.phone.startsWith('+')) {
+        registerData.phone = '+' + registerData.phone.replace(/\D/g, '');
+      }
+      
       await register(registerData);
       toast({
         title: 'Cadastro realizado com sucesso!',
@@ -86,7 +92,7 @@ export function Register() {
     } catch (error: any) {
       toast({
         title: 'Erro ao cadastrar',
-        description: error.response?.data?.message || 'Tente novamente',
+        description: error.response?.data?.message || error.response?.data?.error?.message || 'Tente novamente',
         status: 'error',
         duration: 5000,
       });
@@ -133,7 +139,7 @@ export function Register() {
               <Input
                 value={formData.phone}
                 onChange={(e) => handleChange('phone', e.target.value)}
-                placeholder="+55 11 98765-4321"
+                placeholder="+5511987654321 ou 5511987654321"
               />
               <FormErrorMessage>{errors.phone}</FormErrorMessage>
             </FormControl>
