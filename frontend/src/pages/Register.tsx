@@ -77,9 +77,14 @@ export function Register() {
     try {
       const { confirmPassword, ...registerData } = formData;
       
-      // Ensure phone has + prefix if provided
-      if (registerData.phone && !registerData.phone.startsWith('+')) {
-        registerData.phone = '+' + registerData.phone.replace(/\D/g, '');
+      // Remove phone if empty
+      if (!registerData.phone || registerData.phone.trim() === '') {
+        delete registerData.phone;
+      } else {
+        // Ensure phone has + prefix if provided
+        if (!registerData.phone.startsWith('+')) {
+          registerData.phone = '+' + registerData.phone.replace(/\D/g, '');
+        }
       }
       
       await register(registerData);
