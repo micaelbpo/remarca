@@ -87,7 +87,6 @@ Resources:
           Required: true
           Mutable: true
         - Name: phone_number
-          Required: false
           Mutable: true
         - Name: custom:tenantId
           AttributeDataType: String
