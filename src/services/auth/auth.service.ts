@@ -86,13 +86,23 @@ export class AuthService implements AuthServiceInterface {
       logger.error('Failed to register user', error, { email: input.email });
 
       if (error && typeof error === 'object' && 'name' in error) {
-        if (error.name === 'UsernameExistsException') {
+        const cognitoError = error as { name: string; message?: string };
+        
+        if (cognitoError.name === 'UsernameExistsException') {
           throw new AuthenticationError('Email already registered');
         }
 
-        if (error.name === 'InvalidPasswordException') {
-          throw new ValidationError('Password does not meet requirements');
+        if (cognitoError.name === 'InvalidPasswordException') {
+          throw new ValidationError('Password does not meet requirements: minimum 8 characters, uppercase, lowercase, and numbers');
         }
+
+        if (cognitoError.name === 'InvalidParameterException') {
+          throw new ValidationError(`Invalid parameter: ${cognitoError.message || 'Check your input'}`);
+        }
+
+        // Log and throw the actual Cognito error message
+        logger.error('Cognito error', { name: cognitoError.name, message: cognitoError.message });
+        throw new AuthenticationError(cognitoError.message || `Cognito error: ${cognitoError.name}`);
       }
 
       throw new AuthenticationError('Failed to register user');
