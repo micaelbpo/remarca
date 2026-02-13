@@ -175,6 +175,32 @@ Resources:
         EntryPoints:
           - src/handlers/health.ts
 
+  # Debug Function (temporary - remove in production)
+  DebugCheckProfileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: dist/handlers/debug.checkProfile
+      Layers:
+        - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
+      Events:
+        DebugCheckProfileApi:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref RemarcaApi
+            Path: /debug/check-profile
+            Method: GET
+    Metadata:
+      BuildMethod: esbuild
+      BuildProperties:
+        Minify: true
+        Target: es2020
+        EntryPoints:
+          - src/handlers/debug.ts
+
   # Auth Functions
   RegisterFunction:
     Type: AWS::Serverless::Function
