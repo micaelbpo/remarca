@@ -6,8 +6,9 @@ export interface CreateAppointmentData {
   patientId: string;
   professionalId: string;
   productId: string;
-  dateTime: string;
+  startTime: string;
   tenantId: string;
+  notes?: string;
 }
 
 export interface RescheduleAppointmentData {
@@ -63,10 +64,10 @@ class AppointmentService {
     return response.data;
   }
 
-  async cancel(id: string, tenantId: string, data: CancelAppointmentData): Promise<Appointment> {
+  async cancel(id: string, tenantId: string, cancelledBy?: string): Promise<Appointment> {
     const response = await api.put<Appointment>(
       `${API_ENDPOINTS.APPOINTMENT_CANCEL(id)}?tenantId=${tenantId}`,
-      data
+      { cancelledBy: cancelledBy || 'patient' }
     );
     return response.data;
   }

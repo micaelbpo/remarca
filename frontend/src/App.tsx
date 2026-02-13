@@ -8,6 +8,7 @@ import { ConfirmEmail } from './pages/ConfirmEmail';
 import { Dashboard } from './pages/Dashboard';
 import { ProfessionalDashboard } from './pages/ProfessionalDashboard';
 import { PatientDashboard } from './pages/PatientDashboard';
+import { Booking } from './pages/Booking';
 
 function App() {
   return (
@@ -39,6 +40,14 @@ function App() {
               element={
                 <ProtectedRoute allowedRoles={['PATIENT']}>
                   <PatientDashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/booking"
+              element={
+                <ProtectedRoute allowedRoles={['PATIENT']}>
+                  <Booking />
                 </ProtectedRoute>
               }
             />
