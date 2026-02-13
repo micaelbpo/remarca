@@ -157,7 +157,7 @@ export function AppointmentList({ tenantId, userId, userType }: AppointmentListP
                 <VStack align="start" spacing={2} flex={1}>
                   <HStack>
                     <Text fontWeight="bold" fontSize="lg">
-                      {formatDate(appointment.startTime)} às {formatTime(appointment.startTime)}
+                      {formatDate(appointment.startTime || appointment.dateTime)} às {formatTime(appointment.startTime || appointment.dateTime)}
                     </Text>
                     <Badge colorScheme={STATUS_COLORS[appointment.status]}>
                       {STATUS_LABELS[appointment.status]}
@@ -165,22 +165,24 @@ export function AppointmentList({ tenantId, userId, userType }: AppointmentListP
                   </HStack>
 
                   <Text fontSize="sm" color="gray.600">
-                    <strong>Serviço:</strong> {appointment.productName || 'N/A'}
+                    <strong>Serviço:</strong> {appointment.productName || appointment.productId}
                   </Text>
 
                   {userType === 'PROFESSIONAL' ? (
                     <Text fontSize="sm" color="gray.600">
-                      <strong>Paciente:</strong> {appointment.patientName || 'N/A'}
+                      <strong>Paciente:</strong> {appointment.patientName || appointment.patientId}
                     </Text>
                   ) : (
                     <Text fontSize="sm" color="gray.600">
-                      <strong>Profissional:</strong> {appointment.professionalName || 'N/A'}
+                      <strong>Profissional:</strong> {appointment.professionalName || appointment.professionalId}
                     </Text>
                   )}
 
-                  <Text fontSize="sm" color="gray.600">
-                    <strong>Duração:</strong> {appointment.durationMinutes} minutos
-                  </Text>
+                  {appointment.durationMinutes && (
+                    <Text fontSize="sm" color="gray.600">
+                      <strong>Duração:</strong> {appointment.durationMinutes} minutos
+                    </Text>
+                  )}
 
                   {appointment.notes && (
                     <Text fontSize="sm" color="gray.600">

@@ -332,6 +332,9 @@ Resources:
       Handler: dist/handlers/patients.createPatient
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         CreatePatientApi:
           Type: HttpApi
@@ -354,6 +357,9 @@ Resources:
       Handler: dist/handlers/patients.getPatient
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         GetPatientApi:
           Type: HttpApi
@@ -376,6 +382,9 @@ Resources:
       Handler: dist/handlers/patients.listPatients
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         ListPatientsApi:
           Type: HttpApi
@@ -398,6 +407,9 @@ Resources:
       Handler: dist/handlers/patients.updatePatient
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         UpdatePatientApi:
           Type: HttpApi
@@ -420,6 +432,9 @@ Resources:
       Handler: dist/handlers/patients.deletePatient
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         DeletePatientApi:
           Type: HttpApi
@@ -443,6 +458,9 @@ Resources:
       Handler: dist/handlers/professionals.createProfessional
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         CreateProfessionalApi:
           Type: HttpApi
@@ -465,6 +483,9 @@ Resources:
       Handler: dist/handlers/professionals.getProfessional
       Layers:
         - !Ref RemarcaLayer
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref RemarcaTable
       Events:
         GetProfessionalApi:
           Type: HttpApi

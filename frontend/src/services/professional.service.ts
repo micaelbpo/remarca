@@ -1,6 +1,6 @@
 import { api } from './api';
 import { API_ENDPOINTS } from '../config/api';
-import type { Professional, WeeklySchedule } from '../types';
+import type { Professional } from '../types';
 
 export interface CreateProfessionalData {
   name: string;

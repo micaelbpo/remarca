@@ -78,23 +78,24 @@ export function Register() {
       const { confirmPassword, ...registerData } = formData;
       
       // Remove phone if empty
-      if (!registerData.phone || registerData.phone.trim() === '') {
-        delete registerData.phone;
+      const dataToSend: any = { ...registerData };
+      if (!dataToSend.phone || dataToSend.phone.trim() === '') {
+        delete dataToSend.phone;
       } else {
         // Ensure phone has + prefix if provided
-        if (!registerData.phone.startsWith('+')) {
-          registerData.phone = '+' + registerData.phone.replace(/\D/g, '');
+        if (!dataToSend.phone.startsWith('+')) {
+          dataToSend.phone = '+' + dataToSend.phone.replace(/\D/g, '');
         }
       }
       
-      await register(registerData);
+      await register(dataToSend);
       toast({
         title: 'Cadastro realizado!',
         description: 'Verifique seu email para confirmar o cadastro.',
         status: 'success',
         duration: 5000,
       });
-      navigate(`/confirm-email?email=${encodeURIComponent(registerData.email)}`);
+      navigate(`/confirm-email?email=${encodeURIComponent(dataToSend.email)}`);
     } catch (error: any) {
       toast({
         title: 'Erro ao cadastrar',

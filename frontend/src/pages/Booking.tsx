@@ -7,7 +7,6 @@ import {
   HStack,
   VStack,
   Text,
-  Select,
   SimpleGrid,
   useToast,
   Spinner,
@@ -19,7 +18,6 @@ import {
 } from '@chakra-ui/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
-import { professionalService } from '../services/professional.service';
 import { productService } from '../services/product.service';
 import { appointmentService } from '../services/appointment.service';
 import type { Professional, Product } from '../types';

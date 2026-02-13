@@ -80,7 +80,7 @@ export const listProducts = async (
     const active = event.queryStringParameters?.active;
     const limit = event.queryStringParameters?.limit;
 
-    logger.info('List products request', { tenantId, professionalId, active });
+    logger.info('List products request', { tenantId, professionalId, active, limit });
 
     if (!tenantId) {
       return validationError('tenantId is required');
@@ -93,11 +93,24 @@ export const listProducts = async (
       limit: limit ? parseInt(limit, 10) : undefined,
     };
 
+    logger.info('Calling productService.listProducts with filters', { filters });
+
     const products = await productService.listProducts(filters);
 
+    logger.info('Products retrieved successfully', { count: products.length });
+
     return successResponse({ products, count: products.length });
-  } catch (error) {
-    logger.error('Error listing products', { error });
+  } catch (error: any) {
+    logger.error('Error listing products', { 
+      error, 
+      message: error?.message, 
+      stack: error?.stack,
+      name: error?.name 
+    });
+
+    if (error instanceof ValidationError) {
+      return validationError(error.message);
+    }
 
     return internalError();
   }

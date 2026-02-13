@@ -12,7 +12,7 @@ try {
     $userPoolId = aws cognito-idp list-user-pools --max-results 10 --query "UserPools[?Name=='remarca-users-dev'].Id" --output text
     
     if (-not $userPoolId) {
-        Write-Host "✗ Could not find User Pool" -ForegroundColor Red
+        Write-Host "X Could not find User Pool" -ForegroundColor Red
         Write-Host "  Make sure AWS CLI is configured and you have access to the Cognito User Pool" -ForegroundColor Yellow
         exit 1
     }
@@ -24,12 +24,13 @@ try {
         --client-id (aws cognito-idp list-user-pool-clients --user-pool-id $userPoolId --max-results 10 --query "UserPoolClients[0].ClientId" --output text) `
         --username $email
     
-    Write-Host "✓ Verification code resent successfully!" -ForegroundColor Green
+    Write-Host "OK Verification code resent successfully!" -ForegroundColor Green
     Write-Host "  Check your email (including spam folder)" -ForegroundColor Gray
     
 } catch {
-    Write-Host "✗ Failed to resend verification code" -ForegroundColor Red
+    Write-Host "X Failed to resend verification code" -ForegroundColor Red
     Write-Host "  Error: $($_.Exception.Message)" -ForegroundColor Red
-    Write-Host "`n  This script requires AWS CLI to be installed and configured." -ForegroundColor Yellow
+    Write-Host ""
+    Write-Host "  This script requires AWS CLI to be installed and configured." -ForegroundColor Yellow
     Write-Host "  Alternative: Use the AWS Console to resend the code manually." -ForegroundColor Yellow
 }

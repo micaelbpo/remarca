@@ -238,7 +238,7 @@ export function ProfessionalDashboard() {
                                 <Text fontWeight="bold" fontSize="lg">
                                   {product.name}
                                 </Text>
-                                {!product.isActive && (
+                                {!product.active && (
                                   <Badge colorScheme="red">Inativo</Badge>
                                 )}
                               </HStack>

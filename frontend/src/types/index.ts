@@ -70,6 +70,7 @@ export interface Product {
   professionalId: string;
   tenantId: string;
   active: boolean;
+  price?: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -80,6 +81,7 @@ export interface Appointment {
   professionalId: string;
   productId: string;
   dateTime: string;
+  startTime?: string;
   status: AppointmentStatus;
   tenantId: string;
   createdAt: string;
@@ -88,6 +90,11 @@ export interface Appointment {
   cancelledBy?: string;
   rescheduledFrom?: string;
   rescheduledBy?: string;
+  productName?: string;
+  patientName?: string;
+  professionalName?: string;
+  durationMinutes?: number;
+  notes?: string;
 }
 
 export interface AvailableSlot {
