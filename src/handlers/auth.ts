@@ -107,17 +107,17 @@ export const login = async (
     
     const dynamoRepository = new (await import('../repositories/dynamodb.repository')).DynamoDBRepository();
     
-    const pk = `USER#${payload.sub}`;
+    const pk = `USER#${payload.userId}`;
     const sk = 'PROFILE';
     
-    logger.info('Attempting to get user profile from DynamoDB', { pk, sk, userId: payload.sub });
+    logger.info('Attempting to get user profile from DynamoDB', { pk, sk, userId: payload.userId });
     
     const userProfile = await dynamoRepository.get(pk, sk);
 
-    logger.info('User profile from DynamoDB', { userProfile, userId: payload.sub, found: !!userProfile });
+    logger.info('User profile from DynamoDB', { userProfile, userId: payload.userId, found: !!userProfile });
 
     if (!userProfile) {
-      logger.error('User profile not found in DynamoDB', { userId: payload.sub, pk, sk });
+      logger.error('User profile not found in DynamoDB', { userId: payload.userId, pk, sk });
       return validationError('User profile not found. Please contact support.');
     }
 
