@@ -6,6 +6,7 @@ export interface CreateProductData {
   name: string;
   description?: string;
   durationMinutes: number;
+  price?: number;
   professionalId: string;
   tenantId: string;
 }
@@ -14,6 +15,9 @@ export interface UpdateProductData {
   name?: string;
   description?: string;
   durationMinutes?: number;
+  price?: number;
+  professionalId?: string;
+  tenantId?: string;
 }
 
 class ProductService {

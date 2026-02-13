@@ -15,21 +15,37 @@ import {
   useToast,
   Spinner,
   Center,
+  useDisclosure,
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogContent,
+  AlertDialogOverlay,
+  Badge,
 } from '@chakra-ui/react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { useRef } from 'react';
 import type { Professional, Product } from '../types';
 import { professionalService } from '../services/professional.service';
 import { productService } from '../services/product.service';
+import { ServiceModal } from '../components/ServiceModal';
 
 export function ProfessionalDashboard() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
+  const cancelRef = useRef<HTMLButtonElement>(null);
   
   const [professional, setProfessional] = useState<Professional | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedService, setSelectedService] = useState<Product | null>(null);
+  const [serviceToDeactivate, setServiceToDeactivate] = useState<Product | null>(null);
+  
+  const { isOpen: isServiceModalOpen, onOpen: onServiceModalOpen, onClose: onServiceModalClose } = useDisclosure();
+  const { isOpen: isDeleteAlertOpen, onOpen: onDeleteAlertOpen, onClose: onDeleteAlertClose } = useDisclosure();
 
   useEffect(() => {
     loadData();
@@ -77,6 +93,45 @@ export function ProfessionalDashboard() {
   const handleLogout = () => {
     logout();
     navigate('/login');
+  };
+
+  const handleCreateService = () => {
+    setSelectedService(null);
+    onServiceModalOpen();
+  };
+
+  const handleEditService = (service: Product) => {
+    setSelectedService(service);
+    onServiceModalOpen();
+  };
+
+  const handleDeactivateService = (service: Product) => {
+    setServiceToDeactivate(service);
+    onDeleteAlertOpen();
+  };
+
+  const confirmDeactivate = async () => {
+    if (!serviceToDeactivate || !user) return;
+
+    try {
+      await productService.deactivate(serviceToDeactivate.id, user.tenantId);
+      toast({
+        title: 'Serviço desativado',
+        status: 'success',
+        duration: 3000,
+      });
+      loadData();
+    } catch (error: any) {
+      toast({
+        title: 'Erro ao desativar serviço',
+        description: error.response?.data?.message || 'Tente novamente',
+        status: 'error',
+        duration: 5000,
+      });
+    } finally {
+      onDeleteAlertClose();
+      setServiceToDeactivate(null);
+    }
   };
 
   if (loading) {
@@ -149,30 +204,79 @@ export function ProfessionalDashboard() {
                 <VStack spacing={4} align="stretch">
                   <HStack justify="space-between">
                     <Heading size="md">Meus Serviços</Heading>
-                    <Button colorScheme="blue">Adicionar Serviço</Button>
+                    <Button colorScheme="blue" onClick={handleCreateService}>
+                      Adicionar Serviço
+                    </Button>
                   </HStack>
 
                   {products.length === 0 ? (
                     <Box p={8} bg="white" borderRadius="lg" textAlign="center">
-                      <Text color="gray.500">Nenhum serviço cadastrado ainda</Text>
-                      <Button mt={4} colorScheme="blue">Criar Primeiro Serviço</Button>
+                      <Text color="gray.500" mb={4}>
+                        Nenhum serviço cadastrado ainda
+                      </Text>
+                      <Button colorScheme="blue" onClick={handleCreateService}>
+                        Criar Primeiro Serviço
+                      </Button>
                     </Box>
                   ) : (
-                    products.map((product) => (
-                      <Box key={product.id} p={4} bg="white" borderRadius="lg" boxShadow="sm">
-                        <HStack justify="space-between">
-                          <VStack align="start" spacing={1}>
-                            <Text fontWeight="bold">{product.name}</Text>
-                            <Text fontSize="sm" color="gray.600">{product.description}</Text>
-                            <Text fontSize="sm">Duração: {product.durationMinutes} minutos</Text>
-                          </VStack>
-                          <HStack>
-                            <Button size="sm" variant="outline">Editar</Button>
-                            <Button size="sm" colorScheme="red" variant="outline">Desativar</Button>
+                    <VStack spacing={3} align="stretch">
+                      {products.map((product) => (
+                        <Box
+                          key={product.id}
+                          p={4}
+                          bg="white"
+                          borderRadius="lg"
+                          boxShadow="sm"
+                          borderWidth={1}
+                          borderColor="gray.200"
+                        >
+                          <HStack justify="space-between" align="start">
+                            <VStack align="start" spacing={2} flex={1}>
+                              <HStack>
+                                <Text fontWeight="bold" fontSize="lg">
+                                  {product.name}
+                                </Text>
+                                {!product.isActive && (
+                                  <Badge colorScheme="red">Inativo</Badge>
+                                )}
+                              </HStack>
+                              {product.description && (
+                                <Text fontSize="sm" color="gray.600">
+                                  {product.description}
+                                </Text>
+                              )}
+                              <HStack spacing={4} fontSize="sm">
+                                <Text>
+                                  <strong>Duração:</strong> {product.durationMinutes} min
+                                </Text>
+                                {product.price && (
+                                  <Text>
+                                    <strong>Preço:</strong> R$ {product.price.toFixed(2)}
+                                  </Text>
+                                )}
+                              </HStack>
+                            </VStack>
+                            <HStack>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEditService(product)}
+                              >
+                                Editar
+                              </Button>
+                              <Button
+                                size="sm"
+                                colorScheme="red"
+                                variant="outline"
+                                onClick={() => handleDeactivateService(product)}
+                              >
+                                Desativar
+                              </Button>
+                            </HStack>
                           </HStack>
-                        </HStack>
-                      </Box>
-                    ))
+                        </Box>
+                      ))}
+                    </VStack>
                   )}
                 </VStack>
               </TabPanel>
@@ -204,6 +308,47 @@ export function ProfessionalDashboard() {
           </Tabs>
         </VStack>
       </Container>
+
+      {/* Service Modal */}
+      {user && professional && (
+        <ServiceModal
+          isOpen={isServiceModalOpen}
+          onClose={onServiceModalClose}
+          onSuccess={loadData}
+          service={selectedService}
+          professionalId={user.id}
+          tenantId={user.tenantId}
+        />
+      )}
+
+      {/* Deactivate Confirmation Dialog */}
+      <AlertDialog
+        isOpen={isDeleteAlertOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onDeleteAlertClose}
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Desativar Serviço
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Tem certeza que deseja desativar o serviço "{serviceToDeactivate?.name}"?
+              Ele não ficará mais disponível para agendamentos.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button ref={cancelRef} onClick={onDeleteAlertClose}>
+                Cancelar
+              </Button>
+              <Button colorScheme="red" onClick={confirmDeactivate} ml={3}>
+                Desativar
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </Box>
   );
 }
