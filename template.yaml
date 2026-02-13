@@ -77,6 +77,14 @@ Resources:
       UserPoolName: !Sub remarca-users-${Stage}
       UsernameAttributes:
         - email
+      AutoVerifiedAttributes:
+        - email
+      EmailConfiguration:
+        EmailSendingAccount: COGNITO_DEFAULT
+      VerificationMessageTemplate:
+        DefaultEmailOption: CONFIRM_WITH_CODE
+        EmailMessage: 'Seu código de verificação do Remarca é: {####}'
+        EmailSubject: 'Código de Verificação - Remarca'
       Schema:
         - Name: email
           Required: true
