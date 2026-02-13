@@ -70,7 +70,7 @@ export class AuthService implements AuthServiceInterface {
           { Name: 'name', Value: input.name },
           { Name: 'custom:tenantId', Value: input.tenantId },
           { Name: 'custom:userType', Value: input.userType },
-          ...(input.phone ? [{ Name: 'phone_number', Value: input.phone }] : []),
+          ...(input.phone ? [{ Name: 'custom:phone', Value: input.phone }] : []),
         ],
       });
 

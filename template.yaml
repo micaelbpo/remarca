@@ -86,12 +86,13 @@ Resources:
         - Name: name
           Required: true
           Mutable: true
-        - Name: phone_number
-          Mutable: true
         - Name: custom:tenantId
           AttributeDataType: String
           Mutable: true
         - Name: custom:userType
+          AttributeDataType: String
+          Mutable: true
+        - Name: custom:phone
           AttributeDataType: String
           Mutable: true
       Policies:
